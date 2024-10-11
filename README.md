@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🍵 Matcha-TTS: A fast TTS architecture with conditional flow matching
+# 🍵 Matcha-TTS: 条件付きフローマッチングによる高速TTSアーキテクチャ
 
 ### [Shivam Mehta](https://www.kth.se/profile/smehta), [Ruibo Tu](https://www.kth.se/profile/ruibo), [Jonas Beskow](https://www.kth.se/profile/beskow), [Éva Székely](https://www.kth.se/profile/szekely), and [Gustav Eje Henter](https://people.kth.se/~ghe/)
 
@@ -17,84 +17,83 @@
 
 </div>
 
-> This is the official code implementation of 🍵 Matcha-TTS [ICASSP 2024].
+> これはMatcha-TTSの非公式日本語特化型コードです。
 
-We propose 🍵 Matcha-TTS, a new approach to non-autoregressive neural TTS, that uses [conditional flow matching](https://arxiv.org/abs/2210.02747) (similar to [rectified flows](https://arxiv.org/abs/2209.03003)) to speed up ODE-based speech synthesis. Our method:
+私たちは、ODEに基づく音声合成を高速化するために、[条件付きフローマッチング](https://arxiv.org/abs/2210.02747) ([整流フロー](https://arxiv.org/abs/2209.03003) に類似)を使用する、非自己回帰的ニューラルTTSの新しいアプローチである🍵抹茶TTSを提案する。
+以下が利点です。
 
-- Is probabilistic
-- Has compact memory footprint
-- Sounds highly natural
-- Is very fast to synthesise from
+- 確率的である
+- コンパクトなメモリフットプリント
+- 非常に自然に聞こえる
+- 合成速度が速い
 
-Check out our [demo page](https://shivammehta25.github.io/Matcha-TTS) and read [our ICASSP 2024 paper](https://arxiv.org/abs/2309.03199) for more details.
+詳細は[デモページ](https://shivammehta25.github.io/Matcha-TTS)と[ICASSP 2024論文](https://arxiv.org/abs/2309.03199)をご覧ください。
 
-[Pre-trained models](https://drive.google.com/drive/folders/17C_gYgEHOxI5ZypcfE_k1piKCtyR0isJ?usp=sharing) will be automatically downloaded with the CLI or gradio interface.
+[訓練済みモデル](https://drive.google.com/drive/folders/17C_gYgEHOxI5ZypcfE_k1piKCtyR0isJ?usp=sharing)はCLIまたはgradioインターフェイスで自動的にダウンロードされます。
 
-You can also [try 🍵 Matcha-TTS in your browser on HuggingFace 🤗 spaces](https://huggingface.co/spaces/shivammehta25/Matcha-TTS).
+また、[HuggingFace 🤗 spaces](https://huggingface.co/spaces/shivammehta25/Matcha-TTS)でブラウザ上で🍵Matcha-TTSを試すこともできます。
 
-## Teaser video
+## 解説動画
 
 [![Watch the video](https://img.youtube.com/vi/xmvJkz3bqw0/hqdefault.jpg)](https://youtu.be/xmvJkz3bqw0)
 
-## Installation
+## インストール
 
-1. Create an environment (suggested but optional)
+1. 環境を作る(オプション)
 
 ```
 conda create -n matcha-tts python=3.10 -y
 conda activate matcha-tts
 ```
 
-2. Install Matcha TTS using pip or from source
+2. Matcha TTSをpipまたはソースからインストール
 
 ```bash
 pip install matcha-tts
 ```
 
-from source
+ソースから
 
 ```bash
-pip install git+https://github.com/shivammehta25/Matcha-TTS.git
-cd Matcha-TTS
+pip install git+https://github.com/tuna2134/Matcha-TTS-JP.git
+cd Matcha-TTS-JP
 pip install -e .
 ```
 
-3. Run CLI / gradio app / jupyter notebook
+3. CLIを実行 / gradio app / jupyter notebook
 
 ```bash
-# This will download the required models
+# 必要なモデルをダウンロードします。
 matcha-tts --text "<INPUT TEXT>"
 ```
-
-or
 
 ```bash
 matcha-tts-app
 ```
 
-or open `synthesis.ipynb` on jupyter notebook
+もしくはjupyter notebookで`synthesis.ipynb`を開きます。
 
-### CLI Arguments
+### CLI引数
 
-- To synthesise from given text, run:
+- テキストを与えての音声生成は以下の通りに実行してください。
 
 ```bash
 matcha-tts --text "<INPUT TEXT>"
 ```
 
-- To synthesise from a file, run:
+- ファイルから音声生成したい場合は以下の通りに実行してください。
 
 ```bash
 matcha-tts --file <PATH TO FILE>
 ```
 
-- To batch synthesise from a file, run:
+- バッチを利用してのファイルからの音声生成したい場合は以下の通りに実行してください。
 
 ```bash
 matcha-tts --file <PATH TO FILE> --batched
 ```
 
-Additional arguments
+追加の引数
 
 - Speaking rate
 
@@ -114,41 +113,42 @@ matcha-tts --text "<INPUT TEXT>" --temperature 0.667
 matcha-tts --text "<INPUT TEXT>" --steps 10
 ```
 
-## Train with your own dataset
+## 自分のデータセットを使ってトレーニングする
 
-Let's assume we are training with LJ Speech
+JSUTデータセットを利用して、トレーニングしましょう！
 
-1. Download the dataset from [here](https://keithito.com/LJ-Speech-Dataset/), extract it to `data/LJSpeech-1.1`, and prepare the file lists to point to the extracted data like for [item 5 in the setup of the NVIDIA Tacotron 2 repo](https://github.com/NVIDIA/tacotron2#setup).
+1. まずJSUTをダウンロードして、data/jsutに配置してください。頑張って`train.txt`と`val.txt`に分けてください。
+※wavファイルのサンプリングレートは20040hzにすることをおすすめします。
 
-2. Clone and enter the Matcha-TTS repository
+2. Matcha-TTSをクローンして、移動する。
 
 ```bash
-git clone https://github.com/shivammehta25/Matcha-TTS.git
-cd Matcha-TTS
+git clone https://github.com/tuna2134/Matcha-TTS-JP.git
+cd Matcha-TTS-JP
 ```
 
-3. Install the package from source
+3. ソースからパッケージをインストールする
 
 ```bash
 pip install -e .
 ```
 
-4. Go to `configs/data/ljspeech.yaml` and change
+4. `configs/data/hi-fi_jsut.yaml`を編集する。
 
 ```yaml
-train_filelist_path: data/filelists/ljs_audio_text_train_filelist.txt
-valid_filelist_path: data/filelists/ljs_audio_text_val_filelist.txt
+train_filelist_path: data/train.txt
+valid_filelist_path: data/val.txt
 ```
 
-5. Generate normalisation statistics with the yaml file of dataset configuration
+5. データセット設定のyamlファイルで正規化統計を生成する。
 
 ```bash
-matcha-data-stats -i ljspeech.yaml
+matcha-data-stats -i jsut.yaml
 # Output:
 #{'mel_mean': -5.53662231756592, 'mel_std': 2.1161014277038574}
 ```
 
-Update these values in `configs/data/ljspeech.yaml` under `data_statistics` key.
+これらの値を `configs/data/hi-fi_jsut.yaml` の `data_statistics` キーで更新する。
 
 ```bash
 data_statistics:  # Computed for ljspeech dataset
@@ -156,101 +156,81 @@ data_statistics:  # Computed for ljspeech dataset
   mel_std: 2.116101
 ```
 
-to the paths of your train and validation filelists.
-
-6. Run the training script
+6. トレーニングスクリプトを実行してください。
 
 ```bash
-make train-ljspeech
+python matcha/train.py experiment=jsut
 ```
 
-or
-
-```bash
-python matcha/train.py experiment=ljspeech
-```
-
-- for a minimum memory run
-
-```bash
-python matcha/train.py experiment=ljspeech_min_memory
-```
-
-- for multi-gpu training, run
-
-```bash
-python matcha/train.py experiment=ljspeech trainer.devices=[0,1]
-```
-
-7. Synthesise from the custom trained model
+7. カスタムされたトレーニングモデルで音声を生成する。
 
 ```bash
 matcha-tts --text "<INPUT TEXT>" --checkpoint_path <PATH TO CHECKPOINT>
 ```
 
-## ONNX support
+## ONNXのサポート
 
-> Special thanks to [@mush42](https://github.com/mush42) for implementing ONNX export and inference support.
+> ONNXエクスポートと推論サポートを実装してくれた[@mush42](https://github.com/mush42)に感謝します。
 
-It is possible to export Matcha checkpoints to [ONNX](https://onnx.ai/), and run inference on the exported ONNX graph.
+抹茶のチェックポイントを[ONNX](https://onnx.ai/)にエクスポートし、エクスポートされたONNXグラフに対して推論を実行することができます。
 
-### ONNX export
+### ONNXへ変換
 
-To export a checkpoint to ONNX, first install ONNX with
+チェックポイントをONNXに変換する前に以下の通りにONNXをインストールしてください。
 
 ```bash
 pip install onnx
 ```
 
-then run the following:
+その後に以下の通りに実行してください
 
 ```bash
 python3 -m matcha.onnx.export matcha.ckpt model.onnx --n-timesteps 5
 ```
 
-Optionally, the ONNX exporter accepts **vocoder-name** and **vocoder-checkpoint** arguments. This enables you to embed the vocoder in the exported graph and generate waveforms in a single run (similar to end-to-end TTS systems).
+(オプション) ONNX変換器は**vocoder-name**と**vocoder-checkpoint**引数を受け付けています。これにより、エクスポートしたグラフにボコーダーを組み込み、1回の実行で波形を生成することができます（エンドツーエンドのTTSシステムと同様）。
 
-**Note** that `n_timesteps` is treated as a hyper-parameter rather than a model input. This means you should specify it during export (not during inference). If not specified, `n_timesteps` is set to **5**.
+**Note** `n_timesteps`はモデル入力ではなくハイパーパラメータとして扱われます。つまり、(推論時ではなく)エクスポート時に指定する必要があります。指定しない場合`n_timesteps`は**5**に設定されます。
 
-**Important**: for now, torch>=2.1.0 is needed for export since the `scaled_product_attention` operator is not exportable in older versions. Until the final version is released, those who want to export their models must install torch>=2.1.0 manually as a pre-release.
+**Important**: 古いバージョンでは `scaled_product_attention` 演算子がエクスポートできないため、今のところエクスポートには torch>=2.1.0 が必要です。最終バージョンがリリースされるまでは、モデルをエクスポートしたい人はプレリリースとしてtorch>=2.1.0を手動でインストールする必要があります。
 
-### ONNX Inference
+### ONNX推論
 
-To run inference on the exported model, first install `onnxruntime` using
+エキスポートされたモデルを推論する前に`onnxruntime`以下の通りにインストールしてください。
 
 ```bash
 pip install onnxruntime
-pip install onnxruntime-gpu  # for GPU inference
+pip install onnxruntime-gpu  # GPU推論する場合
 ```
 
-then use the following:
+その後に以下の通りに実行して推論してください。
 
 ```bash
 python3 -m matcha.onnx.infer model.onnx --text "hey" --output-dir ./outputs
 ```
 
-You can also control synthesis parameters:
+音声合成のパラメーターもコントロールできます。
 
 ```bash
 python3 -m matcha.onnx.infer model.onnx --text "hey" --output-dir ./outputs --temperature 0.4 --speaking_rate 0.9 --spk 0
 ```
 
-To run inference on **GPU**, make sure to install **onnxruntime-gpu** package, and then pass `--gpu` to the inference command:
+**GPU**上で推論を実行するには、必ず**onnxruntime-gpu**パッケージをインストールして、推論コマンドに--gpu`を渡してください：
 
 ```bash
 python3 -m matcha.onnx.infer model.onnx --text "hey" --output-dir ./outputs --gpu
 ```
 
-If you exported only Matcha to ONNX, this will write mel-spectrogram as graphs and `numpy` arrays to the output directory.
-If you embedded the vocoder in the exported graph, this will write `.wav` audio files to the output directory.
+MatchaだけをONNXにエクスポートした場合は、mel-spectrogramをグラフと`numpy`配列として出力ディレクトリに書き出します。
+エクスポートしたグラフにボコーダーを埋め込んだ場合、`.wav`オーディオファイルを出力ディレクトリに書き出します。
 
-If you exported only Matcha to ONNX, and you want to run a full TTS pipeline, you can pass a path to a vocoder model in `ONNX` format:
+MatchaだけをONNXにエクスポートし、完全なTTSパイプラインを実行したい場合は、`ONNX`フォーマットのボコーダーモデルへのパスを渡すことができます:
 
 ```bash
 python3 -m matcha.onnx.infer model.onnx --text "hey" --output-dir ./outputs --vocoder hifigan.small.onnx
 ```
 
-This will write `.wav` audio files to the output directory.
+outputディレクトリにwavファイルが書き込まれます。
 
 ## Extract phoneme alignments from Matcha-TTS
 
@@ -289,9 +269,9 @@ load_durations: True
 or see an examples in configs/experiment/ljspeech_from_durations.yaml
 
 
-## Citation information
+## 引用元
 
-If you use our code or otherwise find this work useful, please cite our paper:
+私たちのコードを使用する場合、あるいはこの研究が役に立つと思われる場合は、私たちの論文を引用してください。
 
 ```text
 @inproceedings{mehta2024matcha,
@@ -302,7 +282,7 @@ If you use our code or otherwise find this work useful, please cite our paper:
 }
 ```
 
-## Acknowledgements
+## 謝辞
 
 Since this code uses [Lightning-Hydra-Template](https://github.com/ashleve/lightning-hydra-template), you have all the powers that come with it.
 
