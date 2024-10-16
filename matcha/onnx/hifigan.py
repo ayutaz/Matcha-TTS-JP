@@ -33,8 +33,13 @@ def main():
     dummy_input_lengths = torch.tensor([93])
 
     model = Vocoder(vocoder)
-    exporter = torch.onnx.dynamo_export(model, dummy_input, dummy_input_lengths)
-    exporter.save("vocoder.onnx")
+    torch.onnx.export(
+        model,
+        (dummy_input, dummy_input_lengths),
+        "vocoder.onnx",
+        input_names=["mel", "mel_lengths"],
+        output_names=["wavs", "lengths"],
+    )
 
 
 if __name__ == "__main__":
