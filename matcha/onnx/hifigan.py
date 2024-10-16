@@ -38,7 +38,13 @@ def main():
         (dummy_input, dummy_input_lengths),
         "vocoder.onnx",
         input_names=["mel", "mel_lengths"],
-        output_names=["wavs", "lengths"],
+        output_names=["wav", "lengths"],
+        dynamic_axes={
+            "mel": {0: "batch_size", 2: "time"},
+            "mel_lengths": {0: "batch_size"},
+            "wav": {0: "batch_size", 1: "time"},
+            "wav_lengths": {0: "batch_size"}
+        }
     )
 
 
