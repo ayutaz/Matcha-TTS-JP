@@ -320,7 +320,7 @@ class Encoder(nn.Module):
         self.ffn_layers = torch.nn.ModuleList()
         self.norm_layers_2 = torch.nn.ModuleList()
         for i in range(self.n_layers):
-            self.attn_layers.append(MultiHeadAttention(hidden_channels, hidden_channels, n_heads, i, p_dropout=p_dropout))
+            self.attn_layers.append(MultiHeadAttention(hidden_channels, hidden_channels, n_heads, i + 1, p_dropout=p_dropout))
             self.norm_layers_1.append(LayerNorm(hidden_channels))
             self.ffn_layers.append(
                 FFN(
