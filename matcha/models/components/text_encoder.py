@@ -258,8 +258,8 @@ class MultiHeadAttention(nn.Module):
         p_attn_1 = torch.nn.functional.softmax(scores_1, dim=-1)
         p_attn_2 = torch.nn.functional.softmax(scores_2, dim=-1)
         lambda_ = (
-            torch.exp(self.lambda_q1 * self.lambda_k1)
-            - torch.exp(self.lambda_q2 * self.lambda_k2)
+            torch.exp(torch.dot(self.lambda_q1 * self.lambda_k1))
+            - torch.exp(torch.dot(self.lambda_q2 * self.lambda_k2))
             + self.lambda_init
         )
         p_attn = p_attn_1 - lambda_ * p_attn_2
