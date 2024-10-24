@@ -212,7 +212,6 @@ class MultiHeadAttention(nn.Module):
         self.lambda_k1 = nn.Parameter(torch.normal(mean=0, std=0.1, size=(self.k_channels,)))
         self.lambda_k2 = nn.Parameter(torch.normal(mean=0, std=0.1, size=(self.k_channels,)))
 
-
         torch.nn.init.xavier_uniform_(self.conv_q.weight)
         torch.nn.init.xavier_uniform_(self.conv_k.weight)
         if proximal_init:
